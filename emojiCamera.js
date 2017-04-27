@@ -8,24 +8,16 @@ window.addEventListener("load", function () {
         var imgFile = document.getElementById('fotoArchivo');
         if (imgFile.files && imgFile.files[0]) {
             //La lee
-            var reader = new FileReader();
-            reader.readAsDataURL(imgFile.files[0]);
-            reader.onload = function (image) {
-                //Y cuando termine de leerla llama a uploadPicture con el resultado
-                uploadPicture(image.target.result);
-                //Y tambien la guardamos en la variable global
-                imagen = new Image();
-                imagen.src = image.target.result;
-            };
+            readPicture(imgFile.files[0]);
         }
     });
 
-    if (typeof Windows !== 'undefined'){
+    if (typeof Windows !== 'undefined') {
         document.getElementById("subirFotoCamara").addEventListener("click", function () {
             var dialog = new Windows.Media.Capture.CameraCaptureUI();
             dialog.captureFileAsync(Windows.Media.Capture.CameraCaptureUIMode.photo).then(function (file) {
                 if (file) {
-                    uploadPicture(URL.createObjectURL(file));
+                    readPicture(file);
                 } else {
                     //No Photo captured
                 }
@@ -37,6 +29,18 @@ window.addEventListener("load", function () {
         document.getElementById("subirFotoCamara").style.display = "none";
     }
 });
+
+function readPicture(file) {
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function (image) {
+        //Y cuando termine de leerla llama a uploadPicture con el resultado
+        uploadPicture(image.target.result);
+        //Y tambien la guardamos en la variable global
+        imagen = new Image();
+        imagen.src = image.target.result;
+    };
+}
 
 function uploadPicture(dataURL) {
     // Initialize the HTTP request.
