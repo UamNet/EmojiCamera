@@ -19,6 +19,23 @@ window.addEventListener("load", function () {
             };
         }
     });
+
+    if (typeof Windows !== 'undefined'){
+        document.getElementById("subirFotoCamara").addEventListener("click", function () {
+            var dialog = new Windows.Media.Capture.CameraCaptureUI();
+            dialog.captureFileAsync(Windows.Media.Capture.CameraCaptureUIMode.photo).then(function (file) {
+                if (file) {
+                    uploadPicture(URL.createObjectURL(file));
+                } else {
+                    //No Photo captured
+                }
+            }, function (err) {
+
+            });
+        });
+    } else {
+        document.getElementById("subirFotoCamara").style.display = "none";
+    }
 });
 
 function uploadPicture(dataURL) {
@@ -74,7 +91,7 @@ function carasAnalizadas(datos) {
     var context = canvas.getContext("2d");
     context.drawImage(imagen, 0, 0);
     datos.forEach(function (cara) {
-        context.drawImage(elegirEmoji(cara.scores),cara.faceRectangle.left ,cara.faceRectangle.top,cara.faceRectangle.width,cara.faceRectangle.height );
+        context.drawImage(elegirEmoji(cara.scores), cara.faceRectangle.left, cara.faceRectangle.top, cara.faceRectangle.width, cara.faceRectangle.height);
     });
 }
 
@@ -101,6 +118,6 @@ function elegirEmoji(scores) {
         return b.puntuacion - a.puntuacion
     });
     var imagen = new Image();
-    imagen.src=emojis[puntuaciones[0].emocion]
+    imagen.src = emojis[puntuaciones[0].emocion]
     return imagen;
 }
