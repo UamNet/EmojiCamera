@@ -99,16 +99,24 @@ function carasAnalizadas(datos) {
     });
 }
 
-var emojis = {
-    "anger": "emojis/anger.png",
-    "contempt": "emojis/contempt.png",
-    "disgust": "emojis/disgust.png",
-    "fear": "emojis/fear.png",
-    "happiness": "emojis/happiness.png",
-    "neutral": "emojis/neutral.png",
-    "sadness": "emojis/sadness.png",
-    "surprise": "emojis/surprise.png"
-}
+var emojis = {};
+emojis["anger"] = new Image();
+emojis["anger"].src = "emojis/anger.png";
+emojis["contempt"] = new Image();
+emojis["contempt"].src = "emojis/contempt.png";
+emojis["disgust"] = new Image();
+emojis["disgust"].src = "emojis/disgust.png";
+emojis["fear"] = new Image();
+emojis["fear"].src = "emojis/fear.png";
+emojis["happiness"] = new Image();
+emojis["happiness"].src = "emojis/happiness.png";
+emojis["neutral"] = new Image();
+emojis["neutral"].src = "emojis/neutral.png";
+emojis["sadness"] = new Image();
+emojis["sadness"].src = "emojis/sadness.png";
+emojis["surprise"] = new Image();
+emojis["surprise"].src = "emojis/surprise.png";
+
 
 function elegirEmoji(scores) {
     var puntuaciones = [];
@@ -121,7 +129,5 @@ function elegirEmoji(scores) {
     puntuaciones.sort(function (a, b) {
         return b.puntuacion - a.puntuacion
     });
-    var imagen = new Image();
-    imagen.src = emojis[puntuaciones[0].emocion]
-    return imagen;
+    return emojis[puntuaciones[0].emocion];
 }
