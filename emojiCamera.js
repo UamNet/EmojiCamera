@@ -25,8 +25,10 @@ window.addEventListener("load", function () {
 
             });
         });
+        document.getElementById("compartir").addEventListener("click",share);
     } else {
         document.getElementById("subirFotoCamara").style.display = "none";
+        document.getElementById("compartir").style.display = "none";
     }
 });
 
@@ -130,4 +132,46 @@ function elegirEmoji(scores) {
         return b.puntuacion - a.puntuacion
     });
     return emojis[puntuaciones[0].emocion];
+}
+
+
+
+function share() {
+    var dataTransferManager = Windows.ApplicationModel.DataTransfer.DataTransferManager.getForCurrentView();
+    dataTransferManager.addEventListener("datarequested", generateSharedPicture);
+    Windows.ApplicationModel.DataTransfer.DataTransferManager.showShareUI();
+}
+
+function generateSharedPicture(e) {
+    var output;
+    var input;
+    var outputStream;
+    var blob = document.getElementById("lienzo").msToBlob();
+    var deferral = e.request.getDeferral();
+    Windows.Storage.ApplicationData.current.temporaryFolder.createFileAsync("photo.png",
+        Windows.Storage.CreationCollisionOption.replaceExisting).
+        then(function (file) {
+            return file.openAsync(Windows.Storage.FileAccessMode.readWrite);
+        }).then(function (stream) {
+            outputStream = stream;
+            output = stream.getOutputStreamAt(0);
+            input = blob.msDetachStream();
+            return Windows.Storage.Streams.RandomAccessStream.copyAsync(input, output);
+        }).then(function () {
+            return output.flushAsync();
+        }).done(function () {
+            input.close();
+            output.close();
+            outputStream.close();
+            Windows.Storage.ApplicationData.current.temporaryFolder.getFileAsync("photo.png").done(function (imageFile) {
+                request.data.properties.title = "Mi cara es un Emoji!";
+                request.data.properties.description = "En efecto, mi cara es un emoji";
+                request.data.setText("Foto hecha con EmojiCamera");
+                var streamReference = Windows.Storage.Streams.RandomAccessStreamReference.createFromFile(imageFile);
+                request.data.properties.thumbnail = streamReference;
+                request.data.setStorageItems([imageFile]);
+                request.data.setBitmap(streamReference);
+                deferral.complete();
+            });
+        });
 }
