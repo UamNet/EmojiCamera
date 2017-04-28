@@ -164,13 +164,13 @@ function generateSharedPicture(e) {
             output.close();
             outputStream.close();
             Windows.Storage.ApplicationData.current.temporaryFolder.getFileAsync("photo.png").done(function (imageFile) {
-                request.data.properties.title = "Mi cara es un Emoji!";
-                request.data.properties.description = "En efecto, mi cara es un emoji";
-                request.data.setText("Foto hecha con EmojiCamera");
+                e.request.data.properties.title = "Mi cara es un Emoji!";
+                e.request.data.properties.description = "En efecto, mi cara es un emoji";
+                e.request.data.setText("Foto hecha con EmojiCamera");
                 var streamReference = Windows.Storage.Streams.RandomAccessStreamReference.createFromFile(imageFile);
-                request.data.properties.thumbnail = streamReference;
-                request.data.setStorageItems([imageFile]);
-                request.data.setBitmap(streamReference);
+                e.request.data.properties.thumbnail = streamReference;
+                e.request.data.setStorageItems([imageFile]);
+                e.request.data.setBitmap(streamReference);
                 deferral.complete();
             });
         });
